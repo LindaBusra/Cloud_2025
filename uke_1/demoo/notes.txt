@@ -1,0 +1,244 @@
+ hvordan en kobler seg til databasen med MySQL Workbench:
+https://medium.com/@victoria.kruczek_15509/create-a-local-database-with-docker-compose-and-view-it-in-mysql-workbench-974aee047874
+
+
+
+app.js
+Node.js tabanlı bir HTTP sunucusu oluşturur.
+MySQL veritabanına bağlanmayı dener ve başarısız olursa hata fırlatır.
+Basit bir web sunucusu olarak, kök URL'ye (/) istek yapıldığında "Hello world" yanıtını döner.
+
+Dockerfile
+Node.js sürüm 20 tabanlı bir Docker görüntüsü oluşturur.
+Bağımlılıkların yüklenmesi için npm install komutunu çalıştırır.
+Uygulamanın 8080 portunu açar ve node app.js komutuyla uygulamayı başlatır.
+
+docker-compose.yml
+İki servis tanımlar: web ve db.
+web servisi, Dockerfile kullanarak bir Node.js uygulaması oluşturur ve 8080 portunu açar.
+db servisi için hello-world:1.0.0 görüntüsü belirtmişsiniz, bu muhtemelen bir hata olabilir çünkü bu, bir veritabanı servisi değil. MySQL ya da uygun bir veritabanı görüntüsü kullanmanız gerekecek.
+Her iki servis için sağlık kontrolleri ve bağlılık durumları tanımlanmış.
+
+package.json
+Uygulamanın bağımlılıklarını (burada sadece mysql2 ve http paketleri) ve başlatma komutlarını içerir.
+
+
+
+docker ps --> projeyi actiktan sonra arka planda docker calistirmak. docker desktop'i actiktan onra eger Visual studio code da' docker ps yazarsan arka planda docker calismis olur.
+docker ps -a : se alle konteynere
+
+docker stop 25f --> (25f konteynirin kodu, ilk3 harfi yazman yeterli. calisan konteniyri durduruyor)
+
+
+proje icindeyken yeni bir dosya olusturmak: mkdir newfile
+
+
+path to docker file : docker build -t myapp ./
+docker run myapp
+docker image ls  : alle image i min maskin
+docker run -p 8080:8080 hello-world    
+docker-compose up
+docker-compose down -v : Bu komut, hem konteynerleri hem de kullanılan tüm volume'leri (veri dizinleri dahil) silecektir. -v seçeneği, anonim ve adlandırılmış tüm volume'leri siler.
+docker-compose up -d : Dosyanızı güncelleyip kaydettikten sonra, projenizi başlatmak için bu komutunu kullanın.Bu işlem, temiz bir veri dizini ile MySQL konteynerini başlatır.
+
+
+docker-compose up --build (bygger siste Version av kode)
+bu kodu calistirdigimda son kisimda terminalde bunu gormeliyim: 
+web-1  | Server running at http://0.0.0.0:8080/
+
+
+docker-compose down
+docker-compose up -d
+--------------------------------------------------------------------------------
+docker build -t hello-world .     :  (bygges kontaineren med alt som ligger her, "hello-worl" hvor er det docker filen ligger)  (hello-world is tag name)
+
+docker-compose up -d : Dosyanızı güncelleyip kaydettikten sonra, projenizi başlatmak için bu komutunu kullanın.
+
+Görüntü indirme işlemi tamamlandıktan sonra, konteynerlerin başlatılıp başlatılmadığını kontrol etmek için docker ps veya docker-compose ps komutunu kullanabilirsiniz. Bu komutlar çalışan tüm Docker konteynerlerini listeler.
+
+
+---hersey yolunda ise http://localhost:8080 tarayiciya git.
+
+
+
+
+
+
+OZET:
+1. Konteynerleri Görüntüleme
+docker ps :Çalışan konteynerleri listeler.
+docker ps -a :Tüm konteynerleri (daha önce durdurulmuş olanlar dahil) listeler.
+
+2. Logları Görüntüleme
+docker logs <container-name>
+Örneğin: docker logs demoo-web-1   veya  docker logs demoo-db-1
+Seçilen konteynerin loglarını (çalışma ve hata mesajları) görüntüler.
+
+3. Konteynerleri Durdurma ve Silme
+docker-compose down : Tüm konteynerleri durdurur ve ağları temizler.
+docker-compose down -v :Konteynerleri durdurur ve volume'leri (veri depolama alanlarını) de temizler.
+
+4. Konteynerleri Başlatma
+docker-compose up -d : Tüm servisleri arka planda başlatır.
+docker-compose up :Tüm servisleri başlatır ve logları anlık olarak terminalde gösterir.
+
+
+5. Konteyneri Yeniden Başlatma
+docker restart <container-name>
+Örneğin:docker restart demoo-web-1  veya docker restart demoo-db-1
+Belirtilen konteyneri yeniden başlatır.
+
+
+6. Konteynerlere Erişim
+Konteynerin içine giriş yapma:
+docker exec -it <container-name> bash
+Örneğin: docker exec -it demoo-db-1 bash
+Konteynerin terminaline erişim sağlar (örneğin MySQL ile çalışmak için).
+
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker ps
+CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS                   PORTS                               NAMES
+f2bc973d62be   demoo-web   "docker-entrypoint.s…"   3 minutes ago   Up 2 minutes (healthy)   0.0.0.0:8080->8080/tcp              demoo-web-1
+ee54d91905e6   mysql:5.7   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes (healthy)   0.0.0.0:3306->3306/tcp, 33060/tcp   demoo-db-1
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker exec -it f14 /bin/sh
+sh-4.2# mysql -u root -p
+
+Enter password: example
+mysql>  buraya geliyor
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| exampledb          |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> use mysql
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+mysql> SHOW TABLES;
++---------------------------+
+| Tables_in_mysql           |
++---------------------------+
+| columns_priv              |
+| db                        |
+| engine_cost               |
+| event                     |
+| func                      |
+| general_log               |
+| gtid_executed             |
+| help_category             |
+| help_keyword              |
+| help_relation             |
+| help_topic                |
+| innodb_index_stats        |
+| innodb_table_stats        |
+| ndb_binlog_index          |
+| plugin                    |
+| proc                      |
+| procs_priv                |
+| proxies_priv              |
+| server_cost               |
+| servers                   |
+| slave_master_info         |
+| slave_relay_log_info      |
+| slave_worker_info         |
+| slow_log                  |
+| tables_priv               |
+| time_zone                 |
+| time_zone_leap_second     |
+| time_zone_name            |
+| time_zone_transition      |
+| time_zone_transition_type |
+| user                      |
++---------------------------+
+31 rows in set (0.00 sec)
+
+
+mysql> SELECT host,user from user;
++-----------+---------------+
+| host      | user          |
++-----------+---------------+
+| %         | exampleuser   |
+| %         | root          |
+| localhost | mysql.session |
+| localhost | mysql.sys     |
+| localhost | root          |
++-----------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+sh-4.2# exit
+exit
+
+
+7. Hata Durumlarında Healthcheck Kontrolü
+docker inspect <container-name>
+Örneğin: docker inspect demoo-db-1
+Konteynerin durumu, healthcheck bilgileri ve diğer meta bilgileri görüntüler.
+
+
+8. Volume'leri Kontrol Etme
+docker volume ls : Mevcut volume'leri listeler.
+docker volume rm <volume-name> : volume silme
+
+
+9. Sistemi Temizleme
+Kullanılmayan Ağları, Görüntüleri ve Volume'leri Temizleme:
+docker system prune -a : Docker'daki gereksiz dosyaları temizler. Dikkatli kullanın!
+
+
+10. Web Uygulamasını Test Etme
+Tarayıcıda http://localhost:8080 adresine giderek uygulamanın çalıştığını doğrulayabilirsiniz.
+
+
+
+
+
+https://hub.docker.com/u/lindabusraberg--->burda sonuclari gormek icin:
+
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker login
+Authenticating with existing credentials...
+Login Succeeded
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker tag hello-world:latest lindabusraberg/hello-world:latest
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker push lindabusraberg/hello-world:latest
+The push refers to repository [docker.io/lindabusraberg/hello-world]
+39a071d11e87: Pushed
+a36da2e47dc0: Pushed
+0a96bdb82805: Pushing [==================================================>]   48.5MB/48.5MB
+9ff2745916e3: Pushed
+caee3a3101b9: Pushed 
+7aa8176e6d89: Pushing [==================================>                ]  44.04MB/64.39MB
+1523f4b3f560: Pushing [==========>                                        ]  46.14MB/211.3MB
+c5922a797800: Pushed
+443262b0acdb: Pushed
+a1fa362b3943: Pushed
+6e3a90ea6af4: Pushed
+54c7be425079: Pushed
+5c55f756b46d: Pushing [================================================>  ]  47.19MB/48.23MB
+
+
+
+PS C:\Users\busra\Desktop\GokstadAkademiet\cloud-2025\uke_1\demoo> docker image ls
+REPOSITORY                   TAG       IMAGE ID       CREATED         SIZE
+demoo-web                    latest    ecf00aae7b11   4 hours ago     1.58GB
+hello-world                  latest    43db5a178add   6 hours ago     1.58GB
+lindabusraberg/hello-world   latest    43db5a178add   6 hours ago     1.58GB
+mysql                        latest    0255b469f013   2 months ago    828MB
+mysql                        5.7       4bc6bc963e6d   13 months ago   689MB
+
+
+1-Mevcut Image'leri Kontrol Et: docker image ls
+2-Docker Hub'dan hello-world:latest image'ini indir.:  docker pull hello-world
+3-Image'i oluşturduktan sonra silmek için :docker image rm lindabusraberg/hello-world:latest
+4-orijinal hello-world image'ini de kaldırmak icin:  docker image rm hello-world:latest
+5-Eğer hello-world image'i bir konteyner tarafından kullanılıyorsa, image'i silmeden önce konteyneri durdurup silmeniz gerekir:docker container stop <CONTAINER_ID>
+docker container rm <CONTAINER_ID>
